@@ -16,8 +16,8 @@ const binaryenUrl = `https://cdn.jsdelivr.net/npm/binaryen@${binaryenVersion}/in
 const longUrl = `https://cdn.jsdelivr.net/npm/long@${longVersion}/index.js`;
 const importmap = {
   "imports": {
-    "assemblyscript": `${distUrl}assemblyscript.js`,
-    "assemblyscript/asc": `${distUrl}asc.js`,
+    "@aldea/assemblyscript": `${distUrl}assemblyscript.js`,
+    "@aldea/assemblyscript/asc": `${distUrl}asc.js`,
     "binaryen": binaryenUrl,
     "long": longUrl
   }
