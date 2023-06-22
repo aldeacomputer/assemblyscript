@@ -1559,11 +1559,11 @@
      i32.sub
      i32.load $0
      local.tee $0
-     i32.const 19
+     i32.const 22
      i32.eq
      br_if $is_instance
      local.get $0
-     i32.const 22
+     i32.const 19
      i32.eq
      br_if $is_instance
      i32.const 0
@@ -1637,7 +1637,7 @@
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
- (func $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y> (param $0 i32)
+ (func $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC> (param $0 i32)
   (local $1 i32)
   global.get $~lib/memory/__stack_pointer
   i32.const 4
@@ -1663,7 +1663,7 @@
   i32.store $0
   local.get $0
   if (result i32)
-   block $__inlined_func$~instanceof|instanceof/Y (result i32)
+   block $__inlined_func$~instanceof|instanceof/IC (result i32)
     block $is_instance
      local.get $0
      i32.const 8
@@ -1678,17 +1678,18 @@
      i32.eq
      br_if $is_instance
      i32.const 0
-     br $__inlined_func$~instanceof|instanceof/Y
+     br $__inlined_func$~instanceof|instanceof/IC
     end
     i32.const 1
    end
   else
    i32.const 0
   end
+  i32.eqz
   if
    i32.const 0
    i32.const 1456
-   i32.const 19
+   i32.const 12
    i32.const 5
    call $~lib/builtins/abort
    unreachable
@@ -1730,6 +1731,67 @@
    i32.load $0
    i32.const 22
    i32.eq
+  else
+   i32.const 0
+  end
+  if
+   i32.const 0
+   i32.const 1456
+   i32.const 19
+   i32.const 5
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+ )
+ (func $instanceof/assertDynamicFalse<instanceof/IA,instanceof/IC> (param $0 i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__stack_pointer
+  i32.const 1588
+  i32.lt_s
+  if
+   i32.const 34384
+   i32.const 34432
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+  global.get $~lib/memory/__stack_pointer
+  local.tee $1
+  i32.const 0
+  i32.store $0
+  local.get $1
+  local.get $0
+  i32.store $0
+  local.get $0
+  if (result i32)
+   block $__inlined_func$~instanceof|instanceof/IC (result i32)
+    block $is_instance
+     local.get $0
+     i32.const 8
+     i32.sub
+     i32.load $0
+     local.tee $0
+     i32.const 19
+     i32.eq
+     br_if $is_instance
+     local.get $0
+     i32.const 22
+     i32.eq
+     br_if $is_instance
+     i32.const 0
+     br $__inlined_func$~instanceof|instanceof/IC
+    end
+    i32.const 1
+   end
   else
    i32.const 0
   end
@@ -2496,11 +2558,11 @@
       i32.sub
       i32.load $0
       local.tee $0
-      i32.const 13
+      i32.const 14
       i32.eq
       br_if $is_instance2
       local.get $0
-      i32.const 14
+      i32.const 13
       i32.eq
       br_if $is_instance2
       i32.const 0
@@ -2555,11 +2617,11 @@
       i32.sub
       i32.load $0
       local.tee $0
-      i32.const 13
+      i32.const 14
       i32.eq
       br_if $is_instance4
       local.get $0
-      i32.const 14
+      i32.const 13
       i32.eq
       br_if $is_instance4
       i32.const 0
@@ -2615,11 +2677,11 @@
       i32.sub
       i32.load $0
       local.tee $0
-      i32.const 13
+      i32.const 14
       i32.eq
       br_if $is_instance6
       local.get $0
-      i32.const 14
+      i32.const 13
       i32.eq
       br_if $is_instance6
       i32.const 0
@@ -2694,11 +2756,11 @@
       i32.sub
       i32.load $0
       local.tee $0
-      i32.const 13
+      i32.const 14
       i32.eq
       br_if $is_instance8
       local.get $0
-      i32.const 14
+      i32.const 13
       i32.eq
       br_if $is_instance8
       i32.const 0
@@ -2763,11 +2825,11 @@
       i32.sub
       i32.load $0
       local.tee $0
-      i32.const 13
+      i32.const 14
       i32.eq
       br_if $is_instance10
       local.get $0
-      i32.const 14
+      i32.const 13
       i32.eq
       br_if $is_instance10
       i32.const 0
@@ -2833,11 +2895,11 @@
       i32.sub
       i32.load $0
       local.tee $0
-      i32.const 13
+      i32.const 14
       i32.eq
       br_if $is_instance12
       local.get $0
-      i32.const 14
+      i32.const 13
       i32.eq
       br_if $is_instance12
       i32.const 0
@@ -3123,13 +3185,13 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    local.tee $0
@@ -3147,13 +3209,13 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/w
    local.tee $0
@@ -3183,8 +3245,57 @@
    global.get $instanceof/x
    local.tee $0
    i32.store $0
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.sub
+   global.set $~lib/memory/__stack_pointer
+   global.get $~lib/memory/__stack_pointer
+   i32.const 1588
+   i32.lt_s
+   br_if $folding-inner0
+   global.get $~lib/memory/__stack_pointer
+   local.tee $1
+   i32.const 0
+   i32.store $0
+   local.get $1
    local.get $0
-   call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y>
+   i32.store $0
+   local.get $0
+   if (result i32)
+    block $__inlined_func$~instanceof|instanceof/Y (result i32)
+     block $is_instance21
+      local.get $0
+      i32.const 8
+      i32.sub
+      i32.load $0
+      local.tee $0
+      i32.const 22
+      i32.eq
+      br_if $is_instance21
+      local.get $0
+      i32.const 19
+      i32.eq
+      br_if $is_instance21
+      i32.const 0
+      br $__inlined_func$~instanceof|instanceof/Y
+     end
+     i32.const 1
+    end
+   else
+    i32.const 0
+   end
+   if
+    i32.const 0
+    i32.const 1456
+    i32.const 19
+    i32.const 5
+    call $~lib/builtins/abort
+    unreachable
+   end
+   global.get $~lib/memory/__stack_pointer
+   i32.const 4
+   i32.add
+   global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/x
    local.tee $0
@@ -3193,10 +3304,10 @@
    call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Z>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
+   local.tee $0
    i32.store $0
    global.get $~lib/memory/__stack_pointer
-   global.get $instanceof/y
-   local.tee $0
+   local.get $0
    i32.store $0
    local.get $0
    call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
@@ -3208,10 +3319,10 @@
    call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Z>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
+   local.tee $0
    i32.store $0
    global.get $~lib/memory/__stack_pointer
-   global.get $instanceof/z
-   local.tee $0
+   local.get $0
    i32.store $0
    local.get $0
    call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
@@ -3259,25 +3370,25 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y>
+   call $instanceof/assertDynamicFalse<instanceof/IA,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/x
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y>
+   call $instanceof/assertDynamicFalse<instanceof/IA,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/x
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y>
+   call $instanceof/assertDynamicFalse<instanceof/IA,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/x
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y>
+   call $instanceof/assertDynamicFalse<instanceof/IA,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/x
    i32.store $0
@@ -3289,25 +3400,25 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
    i32.store $0
@@ -3319,25 +3430,25 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    i32.store $0
@@ -3355,13 +3466,13 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y>
+   call $instanceof/assertDynamicFalse<instanceof/IA,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/x
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicFalse<instanceof/X,instanceof/Y>
+   call $instanceof/assertDynamicFalse<instanceof/IA,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/x
    i32.store $0
@@ -3376,13 +3487,13 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/y
    i32.store $0
@@ -3397,13 +3508,13 @@
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    local.tee $0
    i32.store $0
    local.get $0
-   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/Y>
+   call $instanceof/assertDynamicTrue<~lib/object/Object,instanceof/IC>
    global.get $~lib/memory/__stack_pointer
    global.get $instanceof/z
    i32.store $0
