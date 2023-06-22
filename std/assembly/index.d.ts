@@ -35,28 +35,50 @@ declare type f32 = number;
 declare type f64 = number;
 /** A 128-bit vector. */
 declare type v128 = object;
-/** Function reference. */
-declare type funcref = object | null;
-/** External reference. */
-declare type externref = object | null;
-/** Any reference. */
-declare type anyref = object | null;
-/** Equatable reference. */
-declare type eqref = object | null;
-/** Struct reference. */
-declare type structref = object | null;
-/** Array reference. */
-declare type arrayref = object | null;
-/** 31-bit integer reference. */
-declare type i31ref = object | null;
-/** String reference. */
-declare type stringref = object | null;
-/** WTF-8 string view. */
-declare type stringview_wtf8 = object | null;
-/** WTF-16 string view. */
-declare type stringview_wtf16 = object | null;
-/** String iterator. */
-declare type stringview_iter = object | null;
+/** Non-nullable function reference. */
+declare type ref_func = object;
+/** Canonical nullable function reference. */
+declare type funcref = ref_func | null;
+/** Non-nullable external reference. */
+declare type ref_extern = object;
+/** Canonical nullable external reference. */
+declare type externref = ref_extern | null;
+/** Non-nullable any reference. */
+declare type ref_any = object;
+/** Canonical nullable any reference. */
+declare type anyref = ref_any | null;
+/** Non-nullable equatable reference. */
+declare type ref_eq = object;
+/** Canonical nullable equatable reference. */
+declare type eqref = ref_eq | null;
+/** Non-nullable struct reference. */
+declare type ref_struct = object;
+/** Canonical nullable struct reference. */
+declare type structref = ref_struct | null;
+/** Non-nullable array reference. */
+declare type ref_array = object;
+/** Canonical nullable array reference. */
+declare type arrayref = ref_array | null;
+/** Non-nullable 31-bit integer reference. */
+declare type ref_i31 = object;
+/** Canonical nullable 31-bit integer reference. */
+declare type i31ref = ref_i31 | null;
+/** Non-nullable string reference. */
+declare type ref_string = object;
+/** Canonical nullable string reference. */
+declare type stringref = ref_string | null;
+/** Non-nullable WTF-8 string view. */
+declare type ref_stringview_wtf8 = object;
+/** Canonical nullable WTF-8 string view. */
+declare type stringview_wtf8 = ref_stringview_wtf8 | null;
+/** Non-nullable WTF-16 string view. */
+declare type ref_stringview_wtf16 = object;
+/** Canonical nullable WTF-16 string view. */
+declare type stringview_wtf16 = ref_stringview_wtf16 | null;
+/** Non-nullable string iterator. */
+declare type ref_stringview_iter = object;
+/** Canonical nullable string iterator. */
+declare type stringview_iter = ref_stringview_iter | null;
 
 // Compiler hints
 
@@ -786,7 +808,7 @@ declare namespace v128 {
   /** Loads a single lane from memory into the specified lane of the given vector. Other lanes are bypassed as is. */
   export function load_lane<T>(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): v128;
   /** Stores the single lane at the specified index of the given vector to memory. */
-  export function store_lane<T>(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): v128;
+  export function store_lane<T>(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): void;
   /** Creates a vector with eight 16-bit integer lanes by loading and sign extending eight 8-bit integers. */
   export function load8x8_s(ptr: usize, immOffset?: u32, immAlign?: u32): v128;
   /** Creates a vector with eight 16-bit integer lanes by loading and zero extending eight 8-bit integers. */
@@ -822,13 +844,13 @@ declare namespace v128 {
   /** Loads a single 64-bit lane from memory into the specified lane of the given vector. Other lanes are bypassed as is. */
   export function load64_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): v128;
   /** Stores the 8-bit lane at the specified lane of the given vector to memory. */
-  export function store8_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): v128;
+  export function store8_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): void;
   /** Stores the 16-bit lane at the specified lane of the given vector to memory. */
-  export function store16_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): v128;
+  export function store16_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): void;
   /** Stores the 32-bit lane at the specified lane of the given vector to memory. */
-  export function store32_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): v128;
+  export function store32_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): void;
   /** Stores the 64-bit lane at the specified lane of the given vector to memory. */
-  export function store64_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): v128;
+  export function store64_lane(ptr: usize, vec: v128, idx: u8, immOffset?: usize, immAlign?: usize): void;
   /** Stores a vector to memory. */
   export function store(ptr: usize, value: v128, immOffset?: usize, immAlign?: usize): void;
   /** Adds each lane. */
@@ -1640,10 +1662,10 @@ declare namespace f64x2 {
 }
 
 declare abstract class i31 {
-  /** Creates a new i31ref from the specified integer value. */
-  static new(value: i32): i31ref;
-  /** Gets the integer value of an i31ref. */
-  static get(i31expr: i31ref): i32;
+  /** Creates a new 31-bit integer reference from the specified integer value. */
+  static new(value: i32): ref_i31;
+  /** Gets the integer value of an 31-bit integer reference. */
+  static get(i31expr: ref_i31 | null): i32;
 }
 
 /** Macro type evaluating to the underlying native WebAssembly type. */
