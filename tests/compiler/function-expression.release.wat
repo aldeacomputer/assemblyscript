@@ -685,7 +685,7 @@
   if
    i32.const 0
    i32.const 1936
-   i32.const 378
+   i32.const 382
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -710,7 +710,7 @@
    if
     i32.const 0
     i32.const 1936
-    i32.const 385
+    i32.const 389
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -738,7 +738,7 @@
    if
     i32.const 0
     i32.const 1936
-    i32.const 398
+    i32.const 402
     i32.const 5
     call $~lib/builtins/abort
     unreachable
@@ -1105,7 +1105,7 @@
       if
        i32.const 0
        i32.const 1936
-       i32.const 560
+       i32.const 562
        i32.const 3
        call $~lib/builtins/abort
        unreachable
@@ -1172,7 +1172,7 @@
     if
      i32.const 0
      i32.const 1936
-     i32.const 343
+     i32.const 347
      i32.const 18
      call $~lib/builtins/abort
      unreachable
@@ -1305,7 +1305,7 @@
    if
     i32.const 0
     i32.const 1936
-    i32.const 497
+    i32.const 499
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -1320,7 +1320,7 @@
   if
    i32.const 0
    i32.const 1936
-   i32.const 499
+   i32.const 501
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -1790,7 +1790,7 @@
    i32.const 1888
    global.set $~lib/rt/itcms/fromSpace
    global.get $~lib/memory/__stack_pointer
-   i32.const 16
+   i32.const 12
    i32.sub
    global.set $~lib/memory/__stack_pointer
    global.get $~lib/memory/__stack_pointer
@@ -1802,8 +1802,8 @@
    i64.const 0
    i64.store $0
    local.get $0
-   i64.const 0
-   i64.store $0 offset=8
+   i32.const 0
+   i32.store $0 offset=8
    local.get $0
    i32.const 2032
    i32.store $0
@@ -1889,14 +1889,14 @@
    i32.store $0 offset=4
    global.get $~lib/memory/__stack_pointer
    local.get $1
-   i32.store $0 offset=8
+   i32.store $0
    global.get $~lib/memory/__stack_pointer
    local.get $1
    i32.load $0
    i32.load $0
    call_indirect $0 (type $none_=>_i32)
    local.tee $0
-   i32.store $0 offset=12
+   i32.store $0 offset=8
    i32.const 1
    local.get $0
    i32.load $0
@@ -1912,7 +1912,7 @@
     unreachable
    end
    global.get $~lib/memory/__stack_pointer
-   i32.const 16
+   i32.const 12
    i32.add
    global.set $~lib/memory/__stack_pointer
    call $function-expression/semanticallyAnonymous

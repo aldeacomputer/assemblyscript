@@ -1653,7 +1653,7 @@
   if
    i32.const 0
    i32.const 1648
-   i32.const 378
+   i32.const 382
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -1678,7 +1678,7 @@
    if
     i32.const 0
     i32.const 1648
-    i32.const 385
+    i32.const 389
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -1706,7 +1706,7 @@
    if
     i32.const 0
     i32.const 1648
-    i32.const 398
+    i32.const 402
     i32.const 5
     call $~lib/builtins/abort
     unreachable
@@ -2073,7 +2073,7 @@
       if
        i32.const 0
        i32.const 1648
-       i32.const 560
+       i32.const 562
        i32.const 3
        call $~lib/builtins/abort
        unreachable
@@ -2157,7 +2157,7 @@
   if
    i32.const 0
    i32.const 1648
-   i32.const 330
+   i32.const 334
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -2209,7 +2209,7 @@
     if
      i32.const 0
      i32.const 1648
-     i32.const 343
+     i32.const 347
      i32.const 18
      call $~lib/builtins/abort
      unreachable
@@ -2308,7 +2308,7 @@
   if
    i32.const 1376
    i32.const 1648
-   i32.const 459
+   i32.const 461
    i32.const 29
    call $~lib/builtins/abort
    unreachable
@@ -2333,6 +2333,28 @@
   if
    memory.size $0
    local.tee $2
+   local.get $5
+   i32.const 256
+   i32.ge_u
+   if (result i32)
+    local.get $5
+    i32.const 1
+    i32.const 27
+    local.get $5
+    i32.clz
+    i32.sub
+    i32.shl
+    i32.add
+    i32.const 1
+    i32.sub
+    local.get $5
+    local.get $5
+    i32.const 536870910
+    i32.lt_u
+    select
+   else
+    local.get $5
+   end
    i32.const 4
    local.get $4
    i32.load $0 offset=1568
@@ -2343,21 +2365,6 @@
    i32.sub
    i32.ne
    i32.shl
-   local.get $5
-   i32.const 1
-   i32.const 27
-   local.get $5
-   i32.clz
-   i32.sub
-   i32.shl
-   i32.const 1
-   i32.sub
-   i32.add
-   local.get $5
-   local.get $5
-   i32.const 536870910
-   i32.lt_u
-   select
    i32.add
    i32.const 65535
    i32.add
@@ -2399,7 +2406,7 @@
    if
     i32.const 0
     i32.const 1648
-    i32.const 497
+    i32.const 499
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -2414,7 +2421,7 @@
   if
    i32.const 0
    i32.const 1648
-   i32.const 499
+   i32.const 501
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -2433,7 +2440,7 @@
   if
    i32.const 0
    i32.const 1648
-   i32.const 357
+   i32.const 361
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -11125,7 +11132,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    local.get $1
    i32.const 0
    i32.const 2272
@@ -11157,7 +11164,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    local.get $1
    i32.const 15
    i32.const 2272
@@ -11188,7 +11195,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 1712
    i32.const 3
    i32.const 2272
@@ -11218,7 +11225,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 1712
    i32.const 10
    i32.const 1712
@@ -11248,7 +11255,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 1808
    i32.const 100
    i32.const 1712
@@ -11278,7 +11285,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 2336
    i32.const 5
    i32.const 2272
@@ -11308,7 +11315,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2400
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 2336
    i32.const 6
    i32.const 2400
@@ -11338,7 +11345,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2400
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 2336
    i32.const 8
    i32.const 2400
@@ -11369,7 +11376,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    local.get $1
    i32.const 0
    i32.const 2272
@@ -11401,7 +11408,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    local.get $1
    i32.const 15
    i32.const 2272
@@ -11432,7 +11439,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 1712
    i32.const 3
    i32.const 2272
@@ -11462,7 +11469,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 1712
    i32.const 10
    i32.const 1712
@@ -11492,7 +11499,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 1808
    i32.const 100
    i32.const 1712
@@ -11522,7 +11529,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2272
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 2336
    i32.const 5
    i32.const 2272
@@ -11552,7 +11559,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2336
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 2336
    i32.const 6
    i32.const 2336
@@ -11582,7 +11589,7 @@
    i32.store $0 offset=8
    local.get $0
    i32.const 2336
-   i32.store $0 offset=16
+   i32.store $0 offset=12
    i32.const 2336
    i32.const 8
    i32.const 2336
@@ -12563,7 +12570,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 3152
-   i32.store $0 offset=20
+   i32.store $0 offset=16
    local.get $0
    i32.const 3152
    i32.store $0
@@ -12581,7 +12588,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 3200
-   i32.store $0 offset=24
+   i32.store $0 offset=20
    local.get $0
    i32.const 3200
    i32.store $0
@@ -12599,7 +12606,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 3248
-   i32.store $0 offset=28
+   i32.store $0 offset=24
    local.get $0
    i32.const 3248
    i32.store $0
@@ -12616,7 +12623,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 1712
-   i32.store $0 offset=32
+   i32.store $0 offset=28
    local.get $0
    i32.const 1712
    i32.store $0
@@ -12633,7 +12640,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 3296
-   i32.store $0 offset=36
+   i32.store $0 offset=32
    local.get $0
    i32.const 3296
    i32.store $0
@@ -12650,7 +12657,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 3328
-   i32.store $0 offset=40
+   i32.store $0 offset=36
    local.get $0
    i32.const 3328
    i32.store $0
@@ -12667,7 +12674,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 3360
-   i32.store $0 offset=44
+   i32.store $0 offset=40
    local.get $0
    i32.const 3360
    i32.store $0
@@ -13361,7 +13368,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 4656
-   i32.store $0 offset=48
+   i32.store $0 offset=44
    local.get $0
    i32.const 4656
    i32.store $0
@@ -13382,7 +13389,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 4656
-   i32.store $0 offset=52
+   i32.store $0 offset=48
    local.get $0
    i32.const 4656
    i32.store $0
@@ -13438,7 +13445,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 4880
-   i32.store $0 offset=56
+   i32.store $0 offset=52
    local.get $0
    i32.const 4880
    i32.store $0
@@ -13492,7 +13499,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $0
    i32.const 4928
-   i32.store $0 offset=60
+   i32.store $0 offset=56
    local.get $0
    i32.const 4928
    i32.store $0
@@ -15389,7 +15396,7 @@
    i32.store $0 offset=12
    global.get $~lib/memory/__stack_pointer
    i32.const 10288
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    local.get $0
    i32.const 10288
    call $~lib/string/String.__concat
@@ -17033,7 +17040,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 1712
    i32.const 1712
    i32.const 1712
@@ -17066,7 +17073,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 1712
    i32.const 1712
    i32.const 4592
@@ -17099,7 +17106,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 4592
    i32.const 4592
    i32.const 1712
@@ -17132,7 +17139,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 4592
    i32.const 1712
    i32.const 1712
@@ -17165,7 +17172,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 4560
    i32.const 4592
@@ -17198,7 +17205,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 2336
    i32.const 4592
@@ -17231,7 +17238,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 2912
    i32.const 4592
@@ -17264,7 +17271,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 13392
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 13392
    i32.const 13392
@@ -17297,7 +17304,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14304
    i32.const 4560
    i32.const 4592
@@ -17330,7 +17337,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 1712
    i32.const 4592
@@ -17363,7 +17370,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14400
    i32.const 14432
    i32.const 4592
@@ -17396,7 +17403,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 14496
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 14464
    i32.const 14496
@@ -17429,7 +17436,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 14464
    i32.const 1712
@@ -17462,7 +17469,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 2336
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 1712
    i32.const 1712
    i32.const 2336
@@ -17495,7 +17502,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 4560
    i32.const 4592
@@ -17528,7 +17535,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2544
    i32.const 2336
    i32.const 4592
@@ -17561,7 +17568,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14560
    i32.const 2336
    i32.const 4592
@@ -17594,7 +17601,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 13392
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2544
    i32.const 13392
    i32.const 13392
@@ -17627,7 +17634,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 14608
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14640
    i32.const 1808
    i32.const 14608
@@ -17660,7 +17667,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 14496
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2544
    i32.const 13392
    i32.const 14496
@@ -17693,7 +17700,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 14496
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14768
    i32.const 14800
    i32.const 14496
@@ -17726,7 +17733,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 2912
    i32.const 4592
@@ -17759,7 +17766,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 14496
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2912
    i32.const 14864
    i32.const 14496
@@ -17792,7 +17799,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 14896
    i32.const 4592
@@ -17825,7 +17832,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 13392
    i32.const 13392
    i32.const 4592
@@ -17858,7 +17865,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14304
    i32.const 4560
    i32.const 4592
@@ -17891,7 +17898,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 1712
    i32.const 1712
    i32.const 1712
@@ -17924,7 +17931,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 1712
    i32.const 1712
    i32.const 4592
@@ -17957,7 +17964,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 4592
    i32.const 4592
    i32.const 1712
@@ -17990,7 +17997,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 4592
    i32.const 1712
    i32.const 1712
@@ -18023,7 +18030,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4560
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 2336
    i32.const 4560
@@ -18056,7 +18063,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4560
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 2816
    i32.const 4560
@@ -18089,7 +18096,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 4592
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 1712
    i32.const 4592
@@ -18122,7 +18129,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 1712
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 2336
    i32.const 1712
    i32.const 1712
@@ -18155,7 +18162,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 15072
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 15040
    i32.const 1808
    i32.const 15072
@@ -18188,7 +18195,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 15152
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 13392
    i32.const 13392
    i32.const 15152
@@ -18221,7 +18228,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 15184
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14112
    i32.const 1808
    i32.const 15184
@@ -18254,7 +18261,7 @@
    i32.store $0 offset=12
    local.get $0
    i32.const 15072
-   i32.store $0 offset=16
+   i32.store $0 offset=60
    i32.const 14112
    i32.const 13840
    i32.const 15072

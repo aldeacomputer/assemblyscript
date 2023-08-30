@@ -44,6 +44,7 @@
  (type $none_=>_i32 (func (result i32)))
  (type $f32_f32_=>_f32 (func (param f32 f32) (result f32)))
  (type $f64_f64_=>_f64 (func (param f64 f64) (result f64)))
+ (type $i64_=>_i64 (func (param i64) (result i64)))
  (type $i32_i64_i32_i32_=>_none (func (param i32 i64 i32 i32)))
  (type $i64_=>_i32 (func (param i64) (result i32)))
  (type $i32_i64_i32_i64_i32_i64_i32_=>_i32 (func (param i32 i64 i32 i64 i32 i64 i32) (result i32)))
@@ -1404,7 +1405,7 @@
   if
    i32.const 0
    i32.const 480
-   i32.const 378
+   i32.const 382
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -1450,7 +1451,7 @@
    if
     i32.const 0
     i32.const 480
-    i32.const 385
+    i32.const 389
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -1483,7 +1484,7 @@
    if
     i32.const 0
     i32.const 480
-    i32.const 398
+    i32.const 402
     i32.const 5
     call $~lib/builtins/abort
     unreachable
@@ -1727,7 +1728,7 @@
   if
    i32.const 0
    i32.const 480
-   i32.const 560
+   i32.const 562
    i32.const 3
    call $~lib/builtins/abort
    unreachable
@@ -2056,13 +2057,33 @@
   if
    i32.const 144
    i32.const 480
-   i32.const 459
+   i32.const 461
    i32.const 29
    call $~lib/builtins/abort
    unreachable
   end
   local.get $size
   call $~lib/rt/tlsf/computeSize
+  return
+ )
+ (func $~lib/rt/tlsf/roundSize (param $size i32) (result i32)
+  local.get $size
+  i32.const 536870910
+  i32.lt_u
+  if (result i32)
+   local.get $size
+   i32.const 1
+   i32.const 27
+   local.get $size
+   i32.clz
+   i32.sub
+   i32.shl
+   i32.add
+   i32.const 1
+   i32.sub
+  else
+   local.get $size
+  end
   return
  )
  (func $~lib/rt/tlsf/searchBlock (param $root i32) (param $size i32) (result i32)
@@ -2094,24 +2115,13 @@
    local.set $sl
   else
    local.get $size
-   i32.const 536870910
-   i32.lt_u
-   if (result i32)
-    local.get $size
-    i32.const 1
-    i32.const 27
-    local.get $size
-    i32.clz
-    i32.sub
-    i32.shl
-    i32.add
-    i32.const 1
-    i32.sub
-   else
-    local.get $size
-   end
+   call $~lib/rt/tlsf/roundSize
    local.set $requestSize
-   i32.const 31
+   i32.const 4
+   i32.const 8
+   i32.mul
+   i32.const 1
+   i32.sub
    local.get $requestSize
    i32.clz
    i32.sub
@@ -2149,7 +2159,7 @@
   if
    i32.const 0
    i32.const 480
-   i32.const 330
+   i32.const 334
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -2220,7 +2230,7 @@
     if
      i32.const 0
      i32.const 480
-     i32.const 343
+     i32.const 347
      i32.const 18
      call $~lib/builtins/abort
      unreachable
@@ -2284,19 +2294,11 @@
   i32.const 0
   drop
   local.get $size
-  i32.const 536870910
-  i32.lt_u
+  i32.const 256
+  i32.ge_u
   if
    local.get $size
-   i32.const 1
-   i32.const 27
-   local.get $size
-   i32.clz
-   i32.sub
-   i32.shl
-   i32.const 1
-   i32.sub
-   i32.add
+   call $~lib/rt/tlsf/roundSize
    local.set $size
   end
   memory.size $0
@@ -2385,7 +2387,7 @@
   if
    i32.const 0
    i32.const 480
-   i32.const 357
+   i32.const 361
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -2500,7 +2502,7 @@
    if
     i32.const 0
     i32.const 480
-    i32.const 497
+    i32.const 499
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -2520,7 +2522,7 @@
   if
    i32.const 0
    i32.const 480
-   i32.const 499
+   i32.const 501
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -4804,20 +4806,73 @@
   f64.const 2
   f64.eq
  )
+ (func $~lib/polyfills/bswap<u64> (param $value i64) (result i64)
+  (local $a i64)
+  (local $b i64)
+  (local $v i64)
+  i32.const 1
+  drop
+  i32.const 8
+  i32.const 1
+  i32.eq
+  drop
+  i32.const 8
+  i32.const 2
+  i32.eq
+  drop
+  i32.const 8
+  i32.const 4
+  i32.eq
+  drop
+  i32.const 8
+  i32.const 8
+  i32.eq
+  drop
+  local.get $value
+  i64.const 8
+  i64.shr_u
+  i64.const 71777214294589695
+  i64.and
+  local.set $a
+  local.get $value
+  i64.const 71777214294589695
+  i64.and
+  i64.const 8
+  i64.shl
+  local.set $b
+  local.get $a
+  local.get $b
+  i64.or
+  local.set $v
+  local.get $v
+  i64.const 16
+  i64.shr_u
+  i64.const 281470681808895
+  i64.and
+  local.set $a
+  local.get $v
+  i64.const 281470681808895
+  i64.and
+  i64.const 16
+  i64.shl
+  local.set $b
+  local.get $a
+  local.get $b
+  i64.or
+  i64.const 32
+  i64.rotr
+  return
+ )
  (func $~lib/util/bytes/REVERSE<u8> (param $ptr i32) (param $len i32)
   (local $i i32)
   (local $tail i32)
   (local $hlen i32)
   (local $front i32)
   (local $back i32)
-  (local $7 i64)
-  (local $8 i64)
   (local $temp i64)
-  (local $10 i64)
-  (local $11 i64)
-  (local $front|12 i32)
-  (local $back|13 i32)
-  (local $temp|14 i32)
+  (local $front|8 i32)
+  (local $back|9 i32)
+  (local $temp|10 i32)
   local.get $len
   i32.const 1
   i32.gt_u
@@ -4859,58 +4914,12 @@
      local.set $back
      local.get $front
      i64.load $0
-     local.tee $7
-     i64.const 8
-     i64.shr_u
-     i64.const 71777214294589695
-     i64.and
-     local.get $7
-     i64.const 71777214294589695
-     i64.and
-     i64.const 8
-     i64.shl
-     i64.or
-     local.tee $8
-     i64.const 16
-     i64.shr_u
-     i64.const 281470681808895
-     i64.and
-     local.get $8
-     i64.const 281470681808895
-     i64.and
-     i64.const 16
-     i64.shl
-     i64.or
-     i64.const 32
-     i64.rotr
+     call $~lib/polyfills/bswap<u64>
      local.set $temp
      local.get $front
      local.get $back
      i64.load $0
-     local.tee $10
-     i64.const 8
-     i64.shr_u
-     i64.const 71777214294589695
-     i64.and
-     local.get $10
-     i64.const 71777214294589695
-     i64.and
-     i64.const 8
-     i64.shl
-     i64.or
-     local.tee $11
-     i64.const 16
-     i64.shr_u
-     i64.const 281470681808895
-     i64.and
-     local.get $11
-     i64.const 281470681808895
-     i64.and
-     i64.const 16
-     i64.shl
-     i64.or
-     i64.const 32
-     i64.rotr
+     call $~lib/polyfills/bswap<u64>
      i64.store $0
      local.get $back
      local.get $temp
@@ -4940,7 +4949,7 @@
      i32.const 0
      i32.shl
      i32.add
-     local.set $front|12
+     local.set $front|8
      local.get $ptr
      local.get $tail
      local.get $i
@@ -4948,16 +4957,16 @@
      i32.const 0
      i32.shl
      i32.add
-     local.set $back|13
-     local.get $front|12
+     local.set $back|9
+     local.get $front|8
      i32.load8_u $0
-     local.set $temp|14
-     local.get $front|12
-     local.get $back|13
+     local.set $temp|10
+     local.get $front|8
+     local.get $back|9
      i32.load8_u $0
      i32.store8 $0
-     local.get $back|13
-     local.get $temp|14
+     local.get $back|9
+     local.get $temp|10
      i32.store8 $0
      local.get $i
      i32.const 1
@@ -16397,16 +16406,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -16416,7 +16422,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -16522,7 +16528,7 @@
     select
     f64.store $0 offset=8
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -16541,7 +16547,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<f64>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -16608,7 +16614,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<f64>
   local.set $endA
@@ -16663,7 +16669,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<f64>
     local.set $endB
@@ -16743,7 +16749,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<f64>
        local.get $start
@@ -16820,7 +16826,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<f64>
     end
@@ -16836,7 +16842,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -18258,7 +18264,7 @@
   (local $k i32)
   (local $9 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -18266,8 +18272,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Int8Array,i8,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -18314,7 +18320,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -18334,7 +18340,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -18473,7 +18479,7 @@
   (local $k i32)
   (local $9 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -18481,8 +18487,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Uint8Array,u8,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -18529,7 +18535,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -18549,7 +18555,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -18646,7 +18652,7 @@
   (local $k i32)
   (local $9 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -18654,8 +18660,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Uint8ClampedArray,u8,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -18702,7 +18708,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -18722,7 +18728,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -18866,7 +18872,7 @@
   (local $k i32)
   (local $9 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -18874,8 +18880,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Int16Array,i16,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -18922,7 +18928,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -18942,7 +18948,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -19085,7 +19091,7 @@
   (local $k i32)
   (local $9 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -19093,8 +19099,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Uint16Array,u16,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -19141,7 +19147,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -19161,7 +19167,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -19258,7 +19264,7 @@
   (local $k i32)
   (local $9 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -19266,8 +19272,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Int32Array,i32,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -19314,7 +19320,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -19334,7 +19340,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -19476,7 +19482,7 @@
   (local $k i32)
   (local $9 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -19484,8 +19490,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Uint32Array,u32,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -19532,7 +19538,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -19552,7 +19558,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -19695,7 +19701,7 @@
   (local $9 i32)
   (local $10 i64)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -19703,8 +19709,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Int64Array,i64,i64>|inlined.0 (result i64)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -19751,7 +19757,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -19771,7 +19777,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -19914,7 +19920,7 @@
   (local $9 i32)
   (local $10 i64)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -19922,8 +19928,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Uint64Array,u64,u64>|inlined.0 (result i64)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -19970,7 +19976,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -19990,7 +19996,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -20133,7 +20139,7 @@
   (local $9 i32)
   (local $10 f32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -20141,8 +20147,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Float32Array,f32,f32>|inlined.0 (result f32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -20189,7 +20195,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -20209,7 +20215,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -20305,7 +20311,7 @@
   (local $9 i32)
   (local $10 f64)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -20313,8 +20319,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE<~lib/typedarray/Float64Array,f64,f64>|inlined.0 (result f64)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -20361,7 +20367,7 @@
      local.set $9
      global.get $~lib/memory/__stack_pointer
      local.get $9
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $9
      i32.const 4
      global.set $~argumentsLength
@@ -20381,7 +20387,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -22304,7 +22310,7 @@
   (local $i i32)
   (local $8 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -22312,8 +22318,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Int8Array,i8,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -22360,7 +22366,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -22380,7 +22386,7 @@
   end
   local.set $8
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $8
@@ -22475,7 +22481,7 @@
   (local $i i32)
   (local $8 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -22483,8 +22489,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Uint8Array,u8,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -22531,7 +22537,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -22551,7 +22557,7 @@
   end
   local.set $8
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $8
@@ -22647,7 +22653,7 @@
   (local $i i32)
   (local $8 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -22655,8 +22661,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Uint8ClampedArray,u8,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -22703,7 +22709,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -22723,7 +22729,7 @@
   end
   local.set $8
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $8
@@ -22819,7 +22825,7 @@
   (local $i i32)
   (local $8 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -22827,8 +22833,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Int16Array,i16,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -22875,7 +22881,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -22895,7 +22901,7 @@
   end
   local.set $8
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $8
@@ -22990,7 +22996,7 @@
   (local $i i32)
   (local $8 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -22998,8 +23004,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Uint16Array,u16,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -23046,7 +23052,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -23066,7 +23072,7 @@
   end
   local.set $8
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $8
@@ -23162,7 +23168,7 @@
   (local $i i32)
   (local $8 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -23170,8 +23176,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Int32Array,i32,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -23218,7 +23224,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -23238,7 +23244,7 @@
   end
   local.set $8
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $8
@@ -23332,7 +23338,7 @@
   (local $i i32)
   (local $8 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -23340,8 +23346,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Uint32Array,u32,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -23388,7 +23394,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -23408,7 +23414,7 @@
   end
   local.set $8
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $8
@@ -23503,7 +23509,7 @@
   (local $8 i32)
   (local $9 i64)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -23511,8 +23517,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Int64Array,i64,i64>|inlined.0 (result i64)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -23559,7 +23565,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -23579,7 +23585,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -23674,7 +23680,7 @@
   (local $8 i32)
   (local $9 i64)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -23682,8 +23688,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Uint64Array,u64,u64>|inlined.0 (result i64)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -23730,7 +23736,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -23750,7 +23756,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -23845,7 +23851,7 @@
   (local $8 i32)
   (local $9 f32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -23853,8 +23859,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Float32Array,f32,f32>|inlined.0 (result f32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -23901,7 +23907,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -23921,7 +23927,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -24016,7 +24022,7 @@
   (local $8 i32)
   (local $9 f64)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -24024,8 +24030,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/REDUCE_RIGHT<~lib/typedarray/Float64Array,f64,f64>|inlined.0 (result f64)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -24072,7 +24078,7 @@
      local.set $8
      global.get $~lib/memory/__stack_pointer
      local.get $8
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $8
      i32.const 4
      global.set $~argumentsLength
@@ -24092,7 +24098,7 @@
   end
   local.set $9
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $9
@@ -24189,13 +24195,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Int8Array,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -24261,7 +24267,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -24294,7 +24300,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -24437,13 +24443,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Uint8Array,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -24509,7 +24515,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -24542,7 +24548,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -24730,13 +24736,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Uint8ClampedArray,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -24802,7 +24808,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -24835,7 +24841,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -24978,13 +24984,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Int16Array,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -25050,7 +25056,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -25083,7 +25089,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -25275,13 +25281,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Uint16Array,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -25347,7 +25353,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -25380,7 +25386,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -25572,13 +25578,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Int32Array,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -25644,7 +25650,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -25677,7 +25683,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -25820,13 +25826,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Uint32Array,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -25892,7 +25898,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -25925,7 +25931,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -26117,13 +26123,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Int64Array,i64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -26189,7 +26195,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -26222,7 +26228,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -26415,13 +26421,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Uint64Array,u64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -26487,7 +26493,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -26520,7 +26526,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -26713,13 +26719,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Float32Array,f32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -26785,7 +26791,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -26818,7 +26824,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -27011,13 +27017,13 @@
   (local $i i32)
   (local $10 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/MAP<~lib/typedarray/Float64Array,f64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -27083,7 +27089,7 @@
      local.set $10
      global.get $~lib/memory/__stack_pointer
      local.get $10
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $10
      i32.const 3
      global.set $~argumentsLength
@@ -27116,7 +27122,7 @@
   end
   local.set $10
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $10
@@ -27263,13 +27269,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Int8Array,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -27332,7 +27338,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -27386,7 +27392,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -27587,13 +27593,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Uint8Array,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -27656,7 +27662,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -27710,7 +27716,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -27911,13 +27917,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Uint8ClampedArray,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -27980,7 +27986,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -28034,7 +28040,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -28235,13 +28241,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Int16Array,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -28304,7 +28310,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -28358,7 +28364,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -28559,13 +28565,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Uint16Array,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -28628,7 +28634,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -28682,7 +28688,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -28883,13 +28889,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Int32Array,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -28952,7 +28958,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -29006,7 +29012,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -29207,13 +29213,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Uint32Array,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -29276,7 +29282,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -29330,7 +29336,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -29531,13 +29537,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Int64Array,i64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -29600,7 +29606,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -29654,7 +29660,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -29855,13 +29861,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Uint64Array,u64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -29924,7 +29930,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -29978,7 +29984,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -30179,13 +30185,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Float32Array,f32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -30248,7 +30254,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -30302,7 +30308,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -30503,13 +30509,13 @@
   (local $data i32)
   (local $14 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.const 24
+  i32.const 20
   memory.fill $0
   block $~lib/typedarray/FILTER<~lib/typedarray/Float64Array,f64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
@@ -30572,7 +30578,7 @@
      local.set $14
      global.get $~lib/memory/__stack_pointer
      local.get $14
-     i32.store $0 offset=20
+     i32.store $0 offset=8
      local.get $14
      i32.const 3
      global.set $~argumentsLength
@@ -30626,7 +30632,7 @@
   end
   local.set $14
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 20
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $14
@@ -30820,7 +30826,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -30828,8 +30834,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Int8Array,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -30873,7 +30879,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -30896,7 +30902,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -31015,7 +31021,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -31023,8 +31029,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Uint8Array,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -31068,7 +31074,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -31091,7 +31097,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -31210,7 +31216,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -31218,8 +31224,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Uint8ClampedArray,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -31263,7 +31269,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -31286,7 +31292,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -31405,7 +31411,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -31413,8 +31419,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Int16Array,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -31458,7 +31464,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -31481,7 +31487,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -31600,7 +31606,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -31608,8 +31614,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Uint16Array,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -31653,7 +31659,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -31676,7 +31682,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -31795,7 +31801,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -31803,8 +31809,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Int32Array,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -31848,7 +31854,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -31871,7 +31877,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -31990,7 +31996,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -31998,8 +32004,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Uint32Array,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -32043,7 +32049,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -32066,7 +32072,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -32185,7 +32191,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -32193,8 +32199,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Int64Array,i64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -32238,7 +32244,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -32261,7 +32267,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -32380,7 +32386,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -32388,8 +32394,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Uint64Array,u64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -32433,7 +32439,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -32456,7 +32462,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -32575,7 +32581,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -32583,8 +32589,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Float32Array,f32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -32628,7 +32634,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -32651,7 +32657,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -32770,7 +32776,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -32778,8 +32784,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/SOME<~lib/typedarray/Float64Array,f64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -32823,7 +32829,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -32846,7 +32852,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -32965,7 +32971,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -32973,8 +32979,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Int8Array,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -33018,7 +33024,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -33041,7 +33047,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -33161,7 +33167,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -33169,8 +33175,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Uint8Array,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -33214,7 +33220,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -33237,7 +33243,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -33357,7 +33363,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -33365,8 +33371,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Uint8ClampedArray,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -33410,7 +33416,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -33433,7 +33439,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -33553,7 +33559,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -33561,8 +33567,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Int16Array,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -33606,7 +33612,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -33629,7 +33635,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -33749,7 +33755,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -33757,8 +33763,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Uint16Array,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -33802,7 +33808,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -33825,7 +33831,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -33945,7 +33951,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -33953,8 +33959,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Int32Array,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -33998,7 +34004,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -34021,7 +34027,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -34141,7 +34147,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -34149,8 +34155,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Uint32Array,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -34194,7 +34200,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -34217,7 +34223,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -34337,7 +34343,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -34345,8 +34351,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Int64Array,i64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -34390,7 +34396,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -34413,7 +34419,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -34533,7 +34539,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -34541,8 +34547,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Uint64Array,u64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -34586,7 +34592,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -34609,7 +34615,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -34729,7 +34735,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -34737,8 +34743,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Float32Array,f32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -34782,7 +34788,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -34805,7 +34811,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -34925,7 +34931,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -34933,8 +34939,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_INDEX<~lib/typedarray/Float64Array,f64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -34978,7 +34984,7 @@
      local.set $7
      global.get $~lib/memory/__stack_pointer
      local.get $7
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $7
      i32.const 3
      global.set $~argumentsLength
@@ -35001,7 +35007,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -35120,7 +35126,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -35128,8 +35134,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Int8Array,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -35173,7 +35179,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -35196,7 +35202,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -35315,7 +35321,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -35323,8 +35329,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Uint8Array,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -35368,7 +35374,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -35391,7 +35397,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -35510,7 +35516,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -35518,8 +35524,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Uint8ClampedArray,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -35563,7 +35569,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -35586,7 +35592,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -35705,7 +35711,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -35713,8 +35719,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Int16Array,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -35758,7 +35764,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -35781,7 +35787,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -35900,7 +35906,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -35908,8 +35914,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Uint16Array,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -35953,7 +35959,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -35976,7 +35982,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -36095,7 +36101,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -36103,8 +36109,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Int32Array,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -36148,7 +36154,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -36171,7 +36177,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -36290,7 +36296,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -36298,8 +36304,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Uint32Array,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -36343,7 +36349,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -36366,7 +36372,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -36485,7 +36491,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -36493,8 +36499,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Int64Array,i64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -36538,7 +36544,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -36561,7 +36567,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -36680,7 +36686,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -36688,8 +36694,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Uint64Array,u64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -36733,7 +36739,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -36756,7 +36762,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -36875,7 +36881,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -36883,8 +36889,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Float32Array,f32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -36928,7 +36934,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -36951,7 +36957,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -37070,7 +37076,7 @@
   (local $i i32)
   (local $6 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -37078,8 +37084,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/FIND_LAST_INDEX<~lib/typedarray/Float64Array,f64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -37123,7 +37129,7 @@
      local.set $6
      global.get $~lib/memory/__stack_pointer
      local.get $6
-     i32.store $0 offset=12
+     i32.store $0 offset=8
      local.get $6
      i32.const 3
      global.set $~argumentsLength
@@ -37146,7 +37152,7 @@
   end
   local.set $6
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $6
@@ -37266,7 +37272,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -37274,8 +37280,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Int8Array,i8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -37320,7 +37326,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -37345,7 +37351,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -37464,7 +37470,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -37472,8 +37478,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Uint8Array,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -37518,7 +37524,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -37543,7 +37549,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -37662,7 +37668,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -37670,8 +37676,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Uint8ClampedArray,u8>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -37716,7 +37722,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -37741,7 +37747,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -37860,7 +37866,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -37868,8 +37874,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Int16Array,i16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -37914,7 +37920,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -37939,7 +37945,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -38058,7 +38064,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -38066,8 +38072,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Uint16Array,u16>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -38112,7 +38118,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -38137,7 +38143,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -38256,7 +38262,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -38264,8 +38270,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Int32Array,i32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -38310,7 +38316,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -38335,7 +38341,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -38454,7 +38460,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -38462,8 +38468,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Uint32Array,u32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -38508,7 +38514,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -38533,7 +38539,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -38652,7 +38658,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -38660,8 +38666,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Int64Array,i64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -38706,7 +38712,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -38731,7 +38737,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -38850,7 +38856,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -38858,8 +38864,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Uint64Array,u64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -38904,7 +38910,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -38929,7 +38935,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -39048,7 +39054,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -39056,8 +39062,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Float32Array,f32>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -39102,7 +39108,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -39127,7 +39133,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -39246,7 +39252,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -39254,8 +39260,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   block $~lib/typedarray/EVERY<~lib/typedarray/Float64Array,f64>|inlined.0 (result i32)
    global.get $~lib/memory/__stack_pointer
    local.get $this
@@ -39300,7 +39306,7 @@
       local.set $7
       global.get $~lib/memory/__stack_pointer
       local.get $7
-      i32.store $0 offset=12
+      i32.store $0 offset=8
       local.get $7
       i32.const 3
       global.set $~argumentsLength
@@ -39325,7 +39331,7 @@
   end
   local.set $7
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
   local.get $7
@@ -39511,7 +39517,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -39519,8 +39525,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -39563,7 +39569,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -39578,7 +39584,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -39764,7 +39770,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -39772,8 +39778,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -39816,7 +39822,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -39831,7 +39837,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -40020,7 +40026,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -40028,8 +40034,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -40072,7 +40078,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -40087,7 +40093,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -40274,7 +40280,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -40282,8 +40288,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -40326,7 +40332,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -40341,7 +40347,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -40527,7 +40533,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -40535,8 +40541,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -40579,7 +40585,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -40594,7 +40600,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -40779,7 +40785,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -40787,8 +40793,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -40831,7 +40837,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -40846,7 +40852,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -41025,7 +41031,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -41033,8 +41039,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -41077,7 +41083,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -41092,7 +41098,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -41272,7 +41278,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -41280,8 +41286,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -41324,7 +41330,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -41339,7 +41345,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -41522,7 +41528,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -41530,8 +41536,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -41574,7 +41580,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -41589,7 +41595,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -41772,7 +41778,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -41780,8 +41786,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -41824,7 +41830,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -41839,7 +41845,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -42022,7 +42028,7 @@
   (local $k i32)
   (local $7 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
@@ -42030,8 +42036,8 @@
   i64.const 0
   i64.store $0
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0 offset=8
+  i32.const 0
+  i32.store $0 offset=8
   global.get $~lib/memory/__stack_pointer
   local.get $this
   local.tee $array
@@ -42074,7 +42080,7 @@
     local.set $7
     global.get $~lib/memory/__stack_pointer
     local.get $7
-    i32.store $0 offset=12
+    i32.store $0 offset=8
     local.get $7
     i32.const 3
     global.set $~argumentsLength
@@ -42089,7 +42095,7 @@
    end
   end
   global.get $~lib/memory/__stack_pointer
-  i32.const 16
+  i32.const 12
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -80650,16 +80656,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -80669,7 +80672,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -80775,7 +80778,7 @@
     select
     i32.store8 $0 offset=1
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -80794,7 +80797,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<i8>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -80861,7 +80864,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<i8>
   local.set $endA
@@ -80916,7 +80919,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<i8>
     local.set $endB
@@ -80996,7 +80999,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<i8>
        local.get $start
@@ -81073,7 +81076,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<i8>
     end
@@ -81089,7 +81092,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -81416,16 +81419,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -81435,7 +81435,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -81541,7 +81541,7 @@
     select
     i32.store8 $0 offset=1
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -81560,7 +81560,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<u8>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -81627,7 +81627,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<u8>
   local.set $endA
@@ -81682,7 +81682,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<u8>
     local.set $endB
@@ -81762,7 +81762,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<u8>
        local.get $start
@@ -81839,7 +81839,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<u8>
     end
@@ -81855,7 +81855,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -82467,16 +82467,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -82486,7 +82483,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -82592,7 +82589,7 @@
     select
     i32.store16 $0 offset=2
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -82611,7 +82608,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<i16>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -82678,7 +82675,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<i16>
   local.set $endA
@@ -82733,7 +82730,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<i16>
     local.set $endB
@@ -82813,7 +82810,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<i16>
        local.get $start
@@ -82890,7 +82887,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<i16>
     end
@@ -82906,7 +82903,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -83233,16 +83230,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -83252,7 +83246,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -83358,7 +83352,7 @@
     select
     i32.store16 $0 offset=2
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -83377,7 +83371,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<u16>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -83444,7 +83438,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<u16>
   local.set $endA
@@ -83499,7 +83493,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<u16>
     local.set $endB
@@ -83579,7 +83573,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<u16>
        local.get $start
@@ -83656,7 +83650,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<u16>
     end
@@ -83672,7 +83666,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -83997,16 +83991,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -84016,7 +84007,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -84122,7 +84113,7 @@
     select
     i32.store $0 offset=4
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -84141,7 +84132,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<i32>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -84208,7 +84199,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<i32>
   local.set $endA
@@ -84263,7 +84254,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<i32>
     local.set $endB
@@ -84343,7 +84334,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<i32>
        local.get $start
@@ -84420,7 +84411,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<i32>
     end
@@ -84436,7 +84427,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -84763,16 +84754,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -84782,7 +84770,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -84888,7 +84876,7 @@
     select
     i32.store $0 offset=4
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -84907,7 +84895,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<u32>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -84974,7 +84962,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<u32>
   local.set $endA
@@ -85029,7 +85017,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<u32>
     local.set $endB
@@ -85109,7 +85097,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<u32>
        local.get $start
@@ -85186,7 +85174,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<u32>
     end
@@ -85202,7 +85190,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -85527,16 +85515,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -85546,7 +85531,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -85652,7 +85637,7 @@
     select
     i64.store $0 offset=8
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -85671,7 +85656,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<i64>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -85738,7 +85723,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<i64>
   local.set $endA
@@ -85793,7 +85778,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<i64>
     local.set $endB
@@ -85873,7 +85858,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<i64>
        local.get $start
@@ -85950,7 +85935,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<i64>
     end
@@ -85966,7 +85951,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -86293,16 +86278,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -86312,7 +86294,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -86418,7 +86400,7 @@
     select
     i64.store $0 offset=8
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -86437,7 +86419,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<u64>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -86504,7 +86486,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<u64>
   local.set $endA
@@ -86559,7 +86541,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<u64>
     local.set $endB
@@ -86639,7 +86621,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<u64>
        local.get $start
@@ -86716,7 +86698,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<u64>
     end
@@ -86732,7 +86714,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )
@@ -87057,16 +87039,13 @@
   (local $start|33 i32)
   (local $34 i32)
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.sub
   global.set $~lib/memory/__stack_pointer
   call $~stack_check
   global.get $~lib/memory/__stack_pointer
-  i64.const 0
-  i64.store $0
-  global.get $~lib/memory/__stack_pointer
   i32.const 0
-  i32.store $0 offset=8
+  i32.store $0
   local.get $len
   i32.const 48
   i32.le_s
@@ -87076,7 +87055,7 @@
    i32.le_s
    if
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -87182,7 +87161,7 @@
     select
     f32.store $0 offset=4
     global.get $~lib/memory/__stack_pointer
-    i32.const 12
+    i32.const 4
     i32.add
     global.set $~lib/memory/__stack_pointer
     return
@@ -87201,7 +87180,7 @@
    local.get $34
    call $~lib/util/sort/insertionSort<f32>
    global.get $~lib/memory/__stack_pointer
-   i32.const 12
+   i32.const 4
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
@@ -87268,7 +87247,7 @@
   local.set $34
   global.get $~lib/memory/__stack_pointer
   local.get $34
-  i32.store $0 offset=4
+  i32.store $0
   local.get $34
   call $~lib/util/sort/extendRunRight<f32>
   local.set $endA
@@ -87323,7 +87302,7 @@
     local.set $34
     global.get $~lib/memory/__stack_pointer
     local.get $34
-    i32.store $0 offset=4
+    i32.store $0
     local.get $34
     call $~lib/util/sort/extendRunRight<f32>
     local.set $endB
@@ -87403,7 +87382,7 @@
        local.set $34
        global.get $~lib/memory/__stack_pointer
        local.get $34
-       i32.store $0 offset=8
+       i32.store $0
        local.get $34
        call $~lib/util/sort/mergeRuns<f32>
        local.get $start
@@ -87480,7 +87459,7 @@
      local.set $34
      global.get $~lib/memory/__stack_pointer
      local.get $34
-     i32.store $0 offset=8
+     i32.store $0
      local.get $34
      call $~lib/util/sort/mergeRuns<f32>
     end
@@ -87496,7 +87475,7 @@
   local.get $leftRunStartBuf
   call $~lib/rt/tlsf/__free
   global.get $~lib/memory/__stack_pointer
-  i32.const 12
+  i32.const 4
   i32.add
   global.set $~lib/memory/__stack_pointer
  )

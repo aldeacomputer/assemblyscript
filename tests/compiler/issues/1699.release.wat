@@ -631,7 +631,7 @@
   if
    i32.const 0
    i32.const 1488
-   i32.const 378
+   i32.const 382
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -656,7 +656,7 @@
    if
     i32.const 0
     i32.const 1488
-    i32.const 385
+    i32.const 389
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -684,7 +684,7 @@
    if
     i32.const 0
     i32.const 1488
-    i32.const 398
+    i32.const 402
     i32.const 5
     call $~lib/builtins/abort
     unreachable
@@ -1051,7 +1051,7 @@
       if
        i32.const 0
        i32.const 1488
-       i32.const 560
+       i32.const 562
        i32.const 3
        call $~lib/builtins/abort
        unreachable
@@ -1135,7 +1135,7 @@
   if
    i32.const 0
    i32.const 1488
-   i32.const 330
+   i32.const 334
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -1187,7 +1187,7 @@
     if
      i32.const 0
      i32.const 1488
-     i32.const 343
+     i32.const 347
      i32.const 18
      call $~lib/builtins/abort
      unreachable
@@ -1286,7 +1286,7 @@
   if
    i32.const 1152
    i32.const 1488
-   i32.const 459
+   i32.const 461
    i32.const 29
    call $~lib/builtins/abort
    unreachable
@@ -1311,6 +1311,28 @@
   if
    memory.size $0
    local.tee $2
+   local.get $5
+   i32.const 256
+   i32.ge_u
+   if (result i32)
+    local.get $5
+    i32.const 1
+    i32.const 27
+    local.get $5
+    i32.clz
+    i32.sub
+    i32.shl
+    i32.add
+    i32.const 1
+    i32.sub
+    local.get $5
+    local.get $5
+    i32.const 536870910
+    i32.lt_u
+    select
+   else
+    local.get $5
+   end
    i32.const 4
    local.get $4
    i32.load $0 offset=1568
@@ -1321,21 +1343,6 @@
    i32.sub
    i32.ne
    i32.shl
-   local.get $5
-   i32.const 1
-   i32.const 27
-   local.get $5
-   i32.clz
-   i32.sub
-   i32.shl
-   i32.const 1
-   i32.sub
-   i32.add
-   local.get $5
-   local.get $5
-   i32.const 536870910
-   i32.lt_u
-   select
    i32.add
    i32.const 65535
    i32.add
@@ -1377,7 +1384,7 @@
    if
     i32.const 0
     i32.const 1488
-    i32.const 497
+    i32.const 499
     i32.const 16
     call $~lib/builtins/abort
     unreachable
@@ -1392,7 +1399,7 @@
   if
    i32.const 0
    i32.const 1488
-   i32.const 499
+   i32.const 501
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -1411,7 +1418,7 @@
   if
    i32.const 0
    i32.const 1488
-   i32.const 357
+   i32.const 361
    i32.const 14
    call $~lib/builtins/abort
    unreachable
@@ -1554,7 +1561,7 @@
   i32.const 1440
   global.set $~lib/rt/itcms/fromSpace
   global.get $~lib/memory/__stack_pointer
-  i32.const 24
+  i32.const 28
   i32.sub
   global.set $~lib/memory/__stack_pointer
   block $folding-inner0
@@ -1565,7 +1572,7 @@
    global.get $~lib/memory/__stack_pointer
    local.tee $2
    i32.const 0
-   i32.const 24
+   i32.const 28
    memory.fill $0
    local.get $2
    i32.const 16
@@ -1666,22 +1673,22 @@
    i32.store $0 offset=4
    global.get $~lib/memory/__stack_pointer
    local.get $3
-   i32.store $0 offset=16
+   i32.store $0 offset=20
    global.get $~lib/memory/__stack_pointer
    local.get $3
-   i32.store $0 offset=8
+   i32.store $0 offset=12
    call $issues/1699/MultiAssignmentTest#constructor
    local.set $1
    global.get $~lib/memory/__stack_pointer
    local.get $1
-   i32.store $0 offset=12
+   i32.store $0 offset=16
    local.get $3
    i32.const 1
    local.get $1
    call $~lib/array/Array<issues/1699/MultiAssignmentTest>#__set
    global.get $~lib/memory/__stack_pointer
    local.get $3
-   i32.store $0 offset=8
+   i32.store $0 offset=12
    local.get $3
    i32.const 1
    call $~lib/array/Array<issues/1699/MultiAssignmentTest>#__get
@@ -1727,7 +1734,7 @@
      global.get $~lib/memory/__stack_pointer
      call $issues/1699/MultiAssignmentTest#constructor
      local.tee $1
-     i32.store $0 offset=20
+     i32.store $0 offset=24
      local.get $0
      i32.const 1
      i32.gt_s
@@ -1798,7 +1805,7 @@
     unreachable
    end
    global.get $~lib/memory/__stack_pointer
-   i32.const 24
+   i32.const 28
    i32.add
    global.set $~lib/memory/__stack_pointer
    return
