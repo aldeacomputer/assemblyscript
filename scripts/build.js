@@ -200,6 +200,7 @@ const common = {
   platform: "node",
   format: "esm",
   external: [
+    "@aldea/assemblyscript",
     "assemblyscript",
     "binaryen",
     "long"
