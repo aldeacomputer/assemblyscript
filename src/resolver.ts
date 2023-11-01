@@ -392,7 +392,7 @@ export class Resolver extends DiagnosticEmitter {
           break;
         }
         case ParameterKind.Rest: {
-          assert(i == numParameters);
+          assert(i == numParameters - 1);
           hasRest = true;
           break;
         }
@@ -3060,7 +3060,7 @@ export class Resolver extends DiagnosticEmitter {
       assert(!unboundOverridePrototype.isBound);
       let unboundOverrideParent = unboundOverridePrototype.parent;
       let classInstances: Map<string,Class> | null;
-      assert(unboundOverrideParent.kind == ElementKind.ClassPrototype);
+      assert(unboundOverrideParent.kind == ElementKind.ClassPrototype || unboundOverrideParent.kind == ElementKind.InterfacePrototype);
       classInstances = (<ClassPrototype>unboundOverrideParent).instances;
       if (!classInstances) continue;
       for (let _values = Map_values(classInstances), j = 0, l = _values.length; j < l; ++j) {
